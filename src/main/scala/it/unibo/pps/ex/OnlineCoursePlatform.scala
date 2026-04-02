@@ -1,7 +1,11 @@
 package it.unibo.pps.ex
 
 import it.unibo.pps.util.Optionals.Optional
-import it.unibo.pps.util.Sequences.* // Assuming Sequence and related methods are here
+import it.unibo.pps.util.Optionals.Optional.*
+import it.unibo.pps.util.Sequences.*
+import it.unibo.pps.util.Sequences.Sequence.*
+
+import scala.annotation.tailrec
 
 // Represents a course offered on the platform
 trait Course:
@@ -12,7 +16,11 @@ trait Course:
 
 object Course:
   // Factory method for creating Course instances
-  def apply(courseId: String, title: String, instructor: String, category: String): Course = ???
+  def apply(courseId: String, title: String, instructor: String, category: String): Course =
+    CourseImpl(courseId, title, instructor, category)
+
+  private case class CourseImpl(courseId: String, title: String, instructor: String, category: String) extends Course
+
 /**
  * Manages courses and student enrollments on an online learning platform.
  */
@@ -86,7 +94,7 @@ end OnlineCoursePlatform
 
 object OnlineCoursePlatform:
   // Factory method for creating an empty platform instance
-  def apply(): OnlineCoursePlatform = ??? // Fill Here!
+  def apply(): OnlineCoursePlatform = OnlineCoursePlatformImpl() // Fill Here!
 
 /**
  * Represents an online learning platform that offers courses and manages student enrollments.
@@ -101,6 +109,85 @@ object OnlineCoursePlatform:
  *  - Now start incrementally following the main given
  *
  */
+  private class OnlineCoursePlatformImpl() extends OnlineCoursePlatform {
+    type Enrollment = Sequence[(String, String)]
+
+    var courses: Sequence[Course] = Nil()
+    var enrollments: Enrollment = Nil()
+
+    def addCourse(course: Course): Unit =
+      courses = Cons(course, courses)
+
+    def findCoursesByCategory(category: String): Sequence[Course] =
+      @tailrec
+      def inner(courses: Sequence[Course], category: String, seq: Sequence[Course]): Sequence[Course] = courses match
+        case Cons(head, tail) if head.category == category => inner(tail, category, Cons(head, seq))
+        case Cons(head, tail) => inner(tail, category, seq)
+        case _ => seq
+
+      inner(courses, category, Nil())
+
+    def getCourse(courseId: String): Optional[Course] =
+      def inner(courses: Sequence[Course], courseId: String): Optional[Course] = courses match
+        case Cons(head, tail) if head.courseId == courseId => Just(head)
+        case Cons(head, tail) => inner(tail, courseId)
+        case _ => Empty()
+
+      inner(courses, courseId)
+
+    def removeCourse(course: Course): Unit =
+      @tailrec
+      def inner(courses: Sequence[Course], course: Course, seq: Sequence[Course]): Sequence[Course] = courses match
+        case Cons(head, tail) if head != course => inner(tail, course, Cons(head, seq))
+        case Cons(head, tail) => inner(tail, course, seq)
+        case _ => seq
+
+      courses = inner(courses, course, Nil())
+
+    def isCourseAvailable(courseId: String): Boolean =
+      def inner(courses: Sequence[Course], courseId: String): Boolean = courses match
+        case Cons(head, tail) => head.courseId == courseId || inner(tail, courseId)
+        case _ => false
+
+      inner(courses, courseId)
+
+    def enrollStudent(studentId: String, courseId: String): Unit =
+      enrollments = Cons((studentId, courseId), enrollments)
+
+    def unenrollStudent(studentId: String, courseId: String): Unit =
+      @tailrec
+      def inner(enrollments: Enrollment, studentId: String, courseId: String, seq: Enrollment): Enrollment = enrollments match
+        case Cons(head, tail) if head != (studentId, courseId) => inner(tail, studentId, courseId, Cons(head, seq))
+        case Cons(head, tail) => inner(tail, studentId, courseId, seq)
+        case _ => seq
+
+      enrollments = inner(enrollments, studentId, courseId, Nil())
+
+    def getStudentEnrollments(studentId: String): Sequence[Course] =
+      @tailrec
+      def inner(enrollments: Enrollment, studentId: String, seq: Sequence[Course]): Sequence[Course] = enrollments match
+        case Cons(head, tail) if head._1 == studentId => inner(tail, studentId, Cons(getCourseById(head._2), seq))
+        case Cons(head, tail) => inner(tail, studentId, seq)
+        case _ => seq
+
+      inner(enrollments, studentId, Nil())
+
+    def isStudentEnrolled(studentId: String, courseId: String): Boolean =
+      def inner(enrollments: Enrollment, studentId: String, courseId: String): Boolean = enrollments match
+        case Cons(head, tail) => head == (studentId, courseId) || inner(tail, studentId, courseId)
+        case _ => false
+
+      inner(enrollments, studentId, courseId)
+
+    def getCourseById(courseId: String): Course =
+      def inner(courses: Sequence[Course], courseId: String): Course = courses match
+        case Cons(head, tail) if head.courseId == courseId => head
+        case Cons(head, tail) => inner(tail, courseId)
+        case _ => null
+
+      inner(courses, courseId)
+}
+
 @main def mainPlatform(): Unit =
   val platform = OnlineCoursePlatform()
 
@@ -111,6 +198,7 @@ object OnlineCoursePlatform:
   println(s"Is SCALA01 available? ${platform.isCourseAvailable(scalaCourse.courseId)}") // false
   platform.addCourse(scalaCourse)
   println(s"Is SCALA01 available? ${platform.isCourseAvailable(scalaCourse.courseId)}") // true
+
   platform.addCourse(pythonCourse)
   platform.addCourse(designCourse)
 
@@ -133,7 +221,6 @@ object OnlineCoursePlatform:
 
   println(s"Alice's enrollments: ${platform.getStudentEnrollments(studentAlice)}") // Sequence(scalaCourse, designCourse) - Order might vary
   println(s"Bob's enrollments: ${platform.getStudentEnrollments(studentBob)}") // Sequence(scalaCourse)
-
   platform.unenrollStudent(studentAlice, "SCALA01")
   println(s"Is Alice enrolled in SCALA01? ${platform.isStudentEnrolled(studentAlice, "SCALA01")}") // false
   println(s"Alice's enrollments: ${platform.getStudentEnrollments(studentAlice)}") // Sequence(designCourse)
@@ -142,4 +229,3 @@ object OnlineCoursePlatform:
   platform.removeCourse(pythonCourse)
   println(s"Is PYTHON01 available? ${platform.isCourseAvailable(pythonCourse.courseId)}") // false
   println(s"Programming courses: ${platform.findCoursesByCategory("Programming")}") // Sequence(scalaCourse)
-

@@ -1,7 +1,6 @@
 package it.unibo.pps.polyglot.a05b
 
 import it.unibo.pps.polyglot.a05b.Logics
-
 import scala.util.Random
 
 /** solution and descriptions at https://bitbucket.org/mviroli/oop2019-esami/src/master/a05b/sol2/ */

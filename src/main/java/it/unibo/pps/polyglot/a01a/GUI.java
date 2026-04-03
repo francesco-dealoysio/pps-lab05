@@ -14,7 +14,8 @@ public class GUI extends JFrame {
     public GUI(int size, int boat) {
         this.logics = new LogicsImpl(size,boat);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(100*size, 100*size);
+        //this.setSize(100*size, 100*size);
+        this.setSize(80*size, 80*size);
 
         JPanel panel = new JPanel(new GridLayout(size,size));
         this.getContentPane().add(BorderLayout.CENTER,panel);
@@ -24,7 +25,7 @@ public class GUI extends JFrame {
             final Pair<Integer,Integer> p = buttons.get(bt);
             //System.out.println("hit "+p);
             final Logics.Result result = logics.hit(p.getY(), p.getX());
-            if (result==Logics.Result.WON || result==Logics.Result.LOST){
+            if (result == Logics.Result.WON || result== Logics.Result.LOST){
                 System.out.println(result.name());
                 System.exit(0);
             }

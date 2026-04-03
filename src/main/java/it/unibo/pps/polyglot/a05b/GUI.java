@@ -14,6 +14,12 @@ public class GUI extends JFrame {
     private final Logics logics;
 
     public GUI(int size) {
+        // added
+        if (size < 3) {
+            System.out.print("\nMinimum size required is 3!");
+            System.exit(1);
+        }
+
         this.logics = new LogicsImpl(size);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(100*size, 100*size);
@@ -41,8 +47,10 @@ public class GUI extends JFrame {
         this.setVisible(true);
     }
 
+    //private void updateView() {cells.forEach((b,p)-> b.setText( logics.hasElement(p.getX(), p.getY()) ? "*" : " "));}
+
     private void updateView() {
-        cells.forEach((b,p)-> b.setText( logics.hasElement(p.getX(), p.getY()) ? "*" : " "));
+        cells.forEach((b,p)-> b.setText(logics.hasElement(p.getX(), p.getY()) ? "*" : " "));
     }
 
 }

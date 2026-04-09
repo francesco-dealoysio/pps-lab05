@@ -6,19 +6,18 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import it.unibo.pps.polyglot.Pair;
 
-//import it.unibo.pps.polyglot.a01a.LogicsTrait;
-//import it.unibo.pps.polyglot.a01a.LogicsTrait.Result;
-//import it.unibo.pps.polyglot.a01a.LogicsTrait.Result.*;
-
+import it.unibo.pps.polyglot.a01a.LogicsTrait.*;
+import it.unibo.pps.polyglot.a01a.LogicsTrait.Result.*;
 
 public class GUI extends JFrame {
 
     private static final long serialVersionUID = -6218820567019985015L;
     private final Map<JButton,Pair<Integer,Integer>> buttons = new HashMap<>();
-    private final Logics logics;
+    //private final Logics logics;
+    private final LogicsTrait logics;
 
     public GUI(int size, int boat) {
-        this.logics = new LogicsImpl(size,boat);
+        this.logics = new LogicsImpl(size, boat);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         //this.setSize(100*size, 100*size);
         this.setSize(80*size, 80*size);
@@ -30,12 +29,14 @@ public class GUI extends JFrame {
             final JButton bt = (JButton)e.getSource();
             final Pair<Integer,Integer> p = buttons.get(bt);
             //System.out.println("hit "+p);
-            final Logics.Result result = logics.hit(p.getY(), p.getX());
-            if (result == Logics.Result.WON || result == Logics.Result.LOST){
+            final Result result = logics.hit(p.getY(), p.getX());
+            //if (result == Result.WON || result == Result.LOST){
+            if (result == LogicsTrait.Result.valueOf("WON") || result == LogicsTrait.Result.valueOf("LOST")){
                 System.out.println(result.toString());
                 System.exit(0);
             }
-            bt.setText(result == Logics.Result.HIT ? "X" : "O");
+            bt.setText(result  == Result.valueOf("HIT") ? "X" : "O");
+            //bt.setText(result == Result.HIT ? "X" : "O");
             bt.setEnabled(false);
         };
 

@@ -16,8 +16,7 @@ object sameCategory:
         if allSameCategory(tail, cat) then Some(cat) else None
       case Nil()            => None
 
-
-/* Solo per test
+/* Solo per test */
 @main def testSameCategory(): Unit =
   val c1 = Course("SCALA01", "Scala", "Prof A", "Programming")
   val c2 = Course("PYTHON01", "Python", "Prof B", "Programming")
@@ -37,4 +36,3 @@ object sameCategory:
       println(s"$different have same category $cat")
     case _ =>
       println(s"$different have different categories")
-      */

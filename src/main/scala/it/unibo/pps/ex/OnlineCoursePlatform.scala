@@ -19,10 +19,6 @@ object Course:
   def apply(courseId: String, title: String, instructor: String, category: String): Course =
     CourseImpl(courseId, title, instructor, category)
 
-  // exercise 4
-  //def unapply(c: Course): Option[(String, String, String, String)] = Some(c.courseId, c.title, c.instructor, c.category)
-  // end exercise 4
-
   private case class CourseImpl(courseId: String, title: String, instructor: String, category: String) extends Course
 
 /**
@@ -190,12 +186,6 @@ object OnlineCoursePlatform:
         case _ => null
 
       inner(courses, courseId)
-
-    // exercise 4
-    //def sameCategory(courses: Sequence[Courses], cat: String): Option[String] = courses match
-    //  case Course(_, _, _, _) => Some("pippo")
-    //  case _ => None
-    // end exercise 4
 }
 
 @main def mainPlatform(): Unit =

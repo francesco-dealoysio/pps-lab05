@@ -29,7 +29,7 @@ object LogicTrait:
 
 /** solution and descriptions at https://bitbucket.org/mviroli/oop2019-esami/src/master/a01a/sol2/ */
 case class LogicsImpl(val fieldSize: Int, val boatLenght: Int) extends Logics:
-  import LogigsTrait.Result.*
+  //import LogigsTrait.Result.*
   //assert(fieldSize != 5)
 
   private final val MAX_ATTEMPTS: Int = 10

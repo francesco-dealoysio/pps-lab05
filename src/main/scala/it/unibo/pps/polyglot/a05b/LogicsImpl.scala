@@ -4,10 +4,10 @@ import it.unibo.pps.polyglot.a05b.Logics
 import scala.util.Random
 
 /** solution and descriptions at https://bitbucket.org/mviroli/oop2019-esami/src/master/a05b/sol2/ */
-case class LogicsImpl(private val size: Int) extends Logics:
-  private val originX: Int = randomCoordinate
-  private val originY: Int = randomCoordinate
-  private val maxTick: Int = getMaxTick
+case class LogicsImpl(final private val size: Int) extends Logics:
+  final private val originX: Int = randomCoordinate
+  final private val originY: Int = randomCoordinate
+  final private val maxTick: Int = getMaxTick
   private var currentTick: Int = 0
 
   def apply(size: Int): Logics =

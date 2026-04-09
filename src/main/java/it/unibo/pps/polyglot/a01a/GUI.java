@@ -5,6 +5,12 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import it.unibo.pps.polyglot.Pair;
+
+//import it.unibo.pps.polyglot.a01a.LogicsTrait;
+//import it.unibo.pps.polyglot.a01a.LogicsTrait.Result;
+//import it.unibo.pps.polyglot.a01a.LogicsTrait.Result.*;
+
+
 public class GUI extends JFrame {
 
     private static final long serialVersionUID = -6218820567019985015L;
@@ -25,8 +31,8 @@ public class GUI extends JFrame {
             final Pair<Integer,Integer> p = buttons.get(bt);
             //System.out.println("hit "+p);
             final Logics.Result result = logics.hit(p.getY(), p.getX());
-            if (result == Logics.Result.WON || result== Logics.Result.LOST){
-                System.out.println(result.name());
+            if (result == Logics.Result.WON || result == Logics.Result.LOST){
+                System.out.println(result.toString());
                 System.exit(0);
             }
             bt.setText(result == Logics.Result.HIT ? "X" : "O");
